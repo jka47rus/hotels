@@ -1,0 +1,5 @@
+package com.example.hotels.entity;
+
+public enum RoleType {
+    ROLE_USER, ROLE_ADMIN
+}
