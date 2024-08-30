@@ -19,5 +19,6 @@ public class RoomResponse {
     private BigDecimal price;
     private Integer quantityOfPeople;
     private String hotelName;
-    private List<LocalDate> busyDates = new ArrayList<>();
+    @Builder.Default
+    private List<String> busyDates = new ArrayList<>();
 }

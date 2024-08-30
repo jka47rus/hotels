@@ -9,7 +9,9 @@ import com.example.hotels.service.HotelService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,6 @@ public class RoomMapper {
                 .quantityOfPeople(request.getQuantityOfPeople())
                 .description(request.getDescription())
                 .hotel(hotelService.findById(request.getHotelId()))
-                .busyDates(new ArrayList<>())
                 .build();
     }
 
@@ -40,13 +41,19 @@ public class RoomMapper {
                 .price(request.getPrice())
                 .quantityOfPeople(request.getQuantityOfPeople())
                 .description(request.getDescription())
-                .busyDates(new ArrayList<>())
                 .build();
     }
 
     public RoomResponse fromRoomToResponse(Room room) {
         if (room == null) return null;
-
+        List<String> busyDates = new ArrayList<>();
+        room.getBookings().forEach(booking -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.LL.yyyy");
+            String checkIn = booking.getStartDate().format(formatter);
+            String checkOut = booking.getEndDate().format(formatter);
+            busyDates.add(checkIn + "-" + checkOut);
+        });
+        Collections.sort(busyDates);
         return RoomResponse.builder()
                 .id(room.getId())
                 .name(room.getName())
@@ -55,10 +62,11 @@ public class RoomMapper {
                 .quantityOfPeople(room.getQuantityOfPeople())
                 .hotelName(room.getHotel().getName())
                 .price(room.getPrice())
-                .busyDates(room.getBusyDates())
+                .busyDates(busyDates)
                 .build();
     }
 
+    //startDate.datesUntil(endDate.plusDays(1)).toList();
     public List<RoomResponse> fromAllRoomsToListResponse(List<Room> rooms) {
         return rooms.stream().map(this::fromRoomToResponse).collect(Collectors.toList());
     }

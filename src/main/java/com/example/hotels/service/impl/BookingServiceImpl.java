@@ -1,6 +1,6 @@
 package com.example.hotels.service.impl;
 
-import com.example.hotels.dto.Filter;
+import com.example.hotels.dto.filter.Filter;
 import com.example.hotels.entity.Booking;
 import com.example.hotels.entity.Room;
 import com.example.hotels.exception.AlreadyExistsException;
@@ -31,22 +31,20 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking save(Booking booking) {
         Room room = roomService.findById(booking.getRoom().getId());
-        if (!room.addBusyDates(booking.getStartDate(), booking.getEndDate()))
-            throw new AlreadyExistsException(MessageFormat
-                    .format("These dates {0} - {1} are not acceptable for booking",
-                            booking.getStartDate(), booking.getEndDate()));
-        roomService.justSave(room);
-        return bookingRepository.save(booking);
-    }
 
-//    @Override
-//    public Booking update(UUID id, Booking booking) {
-//
-//        Booking existingBooking = findById(id);
-//        booking.setId(existingBooking.getId());
-//        BeanUtils.copyProperties(booking, existingBooking);
-//        return bookingRepository.save(booking);
-//    }
+        room.getBookings().forEach(book -> {
+            boolean notBusy = booking.getStartDate().isBefore(book.getStartDate())
+                    && booking.getEndDate().isBefore(book.getStartDate()) ||
+                    booking.getStartDate().isAfter(book.getEndDate())
+                            && booking.getEndDate().isAfter(book.getEndDate());
+            if (!notBusy) throw new AlreadyExistsException("These dates have already booked!");
+        });
+
+        room.addBooking(booking);
+        bookingRepository.save(booking);
+        roomService.justSave(room);
+        return booking;
+    }
 
     @Override
     public Booking findById(UUID id) {
@@ -58,14 +56,17 @@ public class BookingServiceImpl implements BookingService {
     public void deleteById(UUID id) {
         Booking booking = bookingRepository.findById(id).get();
         Room room = booking.getRoom();
-        room.deleteDates(booking.getStartDate(), booking.getEndDate());
+        room.deleteBooking(booking);
         roomService.justSave(room);
         bookingRepository.deleteById(id);
     }
 
 //    @Override
-//    public Booking findByRoomId(UUID id) {
-//        return null;
-////        return bookingRepository.findByRoomId(id);
+//    public Booking update(UUID id, Booking booking) {
+//
+//        Booking existingBooking = findById(id);
+//        booking.setId(existingBooking.getId());
+//        BeanUtils.copyProperties(booking, existingBooking);
+//        return bookingRepository.save(booking);
 //    }
 }

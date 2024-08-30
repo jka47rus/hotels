@@ -1,6 +1,6 @@
 package com.example.hotels.service.impl;
 
-import com.example.hotels.dto.HotelFilter;
+import com.example.hotels.dto.filter.HotelFilter;
 import com.example.hotels.entity.Hotel;
 import com.example.hotels.entity.Rating;
 import com.example.hotels.exception.EntityNotFoundException;

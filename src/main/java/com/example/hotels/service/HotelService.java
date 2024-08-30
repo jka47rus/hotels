@@ -1,6 +1,6 @@
 package com.example.hotels.service;
 
-import com.example.hotels.dto.HotelFilter;
+import com.example.hotels.dto.filter.HotelFilter;
 import com.example.hotels.entity.Hotel;
 
 import java.util.List;

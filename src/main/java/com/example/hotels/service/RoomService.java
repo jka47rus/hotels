@@ -1,7 +1,6 @@
 package com.example.hotels.service;
 
-import com.example.hotels.dto.Filter;
-import com.example.hotels.dto.RoomFilter;
+import com.example.hotels.dto.filter.RoomFilter;
 import com.example.hotels.entity.Room;
 
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.UUID;
 public interface RoomService {
     List<Room> findAll(RoomFilter filter);
 
-    Room save(Room room);
+    Room saveRoomHotel(Room room);
 
     Room justSave(Room room);
 

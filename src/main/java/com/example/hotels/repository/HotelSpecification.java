@@ -1,6 +1,6 @@
 package com.example.hotels.repository;
 
-import com.example.hotels.dto.HotelFilter;
+import com.example.hotels.dto.filter.HotelFilter;
 import com.example.hotels.entity.Hotel;
 import com.example.hotels.entity.Rating;
 import org.springframework.data.jpa.domain.Specification;

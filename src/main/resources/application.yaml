@@ -1,16 +1,31 @@
 spring:
+  postgres:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/hotels_db
+      username: postgres
+      password: postgres
+      hikari:
+        schema: hotels_schema
+        connection-init-sql: CREATE SCHEMA IF NOT EXISTS hotels_schema
+        connection-timeout: 10000
+  mongo:
+    datasource:
+      data:
+        mongodb:
+          uri: mongodb://root:root@localhost:27017/appdatabase?authSource=admin
   jpa:
     generate-ddl: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
         ddl-auto: update
       show-sql: true
-  datasource:
-    url: jdbc:postgresql://localhost:5432/hotels_db
-    username: postgres
-    password: postgres
-    hikari:
-      schema: hotels_schema
-      connection-init-sql: CREATE SCHEMA IF NOT EXISTS hotels_schema
-      connection-timeout: 10000
+
+  kafka:
+    bootstrap-servers: localhost:9092
+app:
+  kafka:
+    bookingTopic: "booking-topic"
+    bookingGroupId: "booking-group-id"
+
+  file-path: "src/main/resources/files/booking-info.csv"

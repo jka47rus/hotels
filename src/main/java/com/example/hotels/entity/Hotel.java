@@ -36,11 +36,6 @@ public class Hotel {
 
 
     public void addRoom(Room room) {
-
-//       if(rooms.stream().anyMatch(r->r.equals(room))) throw new AlreadyExistsException(MessageFormat
-//               .format("In this hotel such room number: {0} already existed!", room.getNumber()));
-//        rooms.add(room);
-
         if (rooms.contains(room)) throw new AlreadyExistsException(MessageFormat
                 .format("In this hotel such room number: {0} already existed!", room.getNumber()));
         rooms.add(room);

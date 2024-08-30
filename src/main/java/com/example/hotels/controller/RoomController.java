@@ -1,7 +1,6 @@
 package com.example.hotels.controller;
 
-import com.example.hotels.dto.Filter;
-import com.example.hotels.dto.RoomFilter;
+import com.example.hotels.dto.filter.RoomFilter;
 import com.example.hotels.dto.request.RoomRequest;
 import com.example.hotels.dto.request.RoomRequestForUpdate;
 import com.example.hotels.dto.response.RoomResponse;
@@ -46,7 +45,7 @@ public class RoomController {
 
         Room room = roomMapper.fromRequestToRoom(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(roomMapper.fromRoomToResponse(roomService.save(room)));
+                .body(roomMapper.fromRoomToResponse(roomService.saveRoomHotel(room)));
     }
 
     @GetMapping("/{id}")

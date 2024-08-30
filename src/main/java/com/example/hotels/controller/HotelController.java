@@ -1,6 +1,6 @@
 package com.example.hotels.controller;
 
-import com.example.hotels.dto.HotelFilter;
+import com.example.hotels.dto.filter.HotelFilter;
 import com.example.hotels.dto.request.HotelRequest;
 import com.example.hotels.dto.response.HotelResponse;
 import com.example.hotels.entity.Hotel;

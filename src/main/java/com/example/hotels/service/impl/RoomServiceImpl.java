@@ -1,7 +1,6 @@
 package com.example.hotels.service.impl;
 
-import com.example.hotels.dto.Filter;
-import com.example.hotels.dto.RoomFilter;
+import com.example.hotels.dto.filter.RoomFilter;
 import com.example.hotels.entity.Hotel;
 import com.example.hotels.entity.Room;
 import com.example.hotels.exception.EntityNotFoundException;
@@ -33,7 +32,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room save(Room room) {
+    public Room saveRoomHotel(Room room) {
 
         Hotel hotel = room.getHotel();
         hotel.addRoom(room);
@@ -53,7 +52,6 @@ public class RoomServiceImpl implements RoomService {
         Hotel hotel = existedRoom.getHotel();
         room.setId(existedRoom.getId());
         room.setHotel(hotel);
-        if (!existedRoom.getBusyDates().isEmpty()) room.setBusyDates(existedRoom.getBusyDates());
         if (room.getNumber() != existedRoom.getNumber()) {
             hotel.deleteRoom(existedRoom);
             hotel.addRoom(room);
