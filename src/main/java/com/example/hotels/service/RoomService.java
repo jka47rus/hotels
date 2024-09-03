@@ -15,13 +15,9 @@ public interface RoomService {
 
     Room update(UUID id, Room room);
 
-//    Room findByNumber(Integer number);
-
     Room findById(UUID id);
 
     void deleteById(UUID id);
-
-//    void addDates(UUID roomId, LocalDate startDate, LocalDate endDate);
 
     boolean existsByNumber(UUID hotelId, Integer roomNumber);
 

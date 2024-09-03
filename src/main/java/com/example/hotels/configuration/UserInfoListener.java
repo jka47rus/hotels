@@ -1,8 +1,8 @@
 package com.example.hotels.configuration;
 
-import com.example.hotels.dto.kafka.BookingInfo;
-import com.example.hotels.entity.BookingInfoMongo;
-import com.example.hotels.service.BookingInfoService;
+import com.example.hotels.dto.kafka.UserInfo;
+import com.example.hotels.entity.UserInfoMongo;
+import com.example.hotels.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,30 +16,25 @@ import java.util.UUID;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class BookingInfoListener {
+public class UserInfoListener {
 
-    private final BookingInfoService bookingInfoService;
+    private final UserInfoService userInfoService;
 
-    @KafkaListener(topics = "${app.kafka.bookingTopic}",
-            groupId = "${app.kafka.bookingGroupId}",
-            containerFactory = "bookingInfoConcurrentKafkaListenerContainerFactory")
-    public void listen(@Payload BookingInfo bookingInfo,
+    @KafkaListener(topics = "${app.kafka.usersTopic}",
+            groupId = "${app.kafka.usersGroupId}",
+            containerFactory = "userInfoConcurrentKafkaListenerContainerFactory")
+    public void listen(@Payload UserInfo userInfo,
                        @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) UUID key,
                        @Header(value = KafkaHeaders.RECEIVED_TOPIC) String topic,
                        @Header(value = KafkaHeaders.RECEIVED_PARTITION) Integer partition,
                        @Header(value = KafkaHeaders.RECEIVED_TIMESTAMP) Long timestamp) {
-        log.info("Received message: {}", bookingInfo);
+        log.info("Received message: {}", userInfo);
         log.info("Key: {}; Partition: {}; Topic: {}; Timestamp: {}", key, partition, topic, timestamp);
 
 
-        bookingInfoService.save(BookingInfoMongo.builder()
-                .id(UUID.randomUUID().toString())
-                .userId(bookingInfo.getUserId())
-                .checkIn(bookingInfo.getCheckIn().toString())
-                .checkOut(bookingInfo.getCheckOut().toString())
+        userInfoService.save(UserInfoMongo.builder()
+                .userId(userInfo.getUserId())
                 .build());
 
     }
-
-
 }

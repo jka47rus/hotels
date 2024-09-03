@@ -12,6 +12,7 @@ import com.example.hotels.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.MessageFormat;
@@ -31,7 +32,8 @@ public class RoomController {
 
     }
 
-     @PostMapping
+    @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN'")
     public ResponseEntity<RoomResponse> create(@RequestBody RoomRequest request) {
         if (!roomService.existsByHotelId(request.getHotelId())) {
             throw new EntityNotFoundException(MessageFormat
@@ -54,6 +56,7 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN'")
     public ResponseEntity<RoomResponse> update(@PathVariable UUID id,
                                                @RequestBody RoomRequestForUpdate request) {
 
@@ -63,20 +66,11 @@ public class RoomController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN'")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         roomService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
-
-//    @PutMapping("/dates/{id}")
-//    public ResponseEntity<Void> addDates(@PathVariable UUID hotelId,
-//                                         @RequestParam LocalDate startDate,
-//                                         @RequestParam LocalDate endDate) {
-//        roomService.addDates(hotelId, startDate, endDate);
-//
-//        return ResponseEntity.noContent().build();
-//    }
-
 
 }

@@ -1,8 +1,8 @@
 package com.example.hotels.controller;
 
 import com.example.hotels.dto.filter.Filter;
-import com.example.hotels.entity.BookingInfoMongo;
-import com.example.hotels.service.BookingInfoService;
+import com.example.hotels.entity.UserInfoMongo;
+import com.example.hotels.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -16,20 +16,20 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/booking/info")
-public class BookingInfoController {
+@RequestMapping("/api/user/info")
+public class UserInfoController {
 
-    private final BookingInfoService bookingInfoService;
+    private final UserInfoService userInfoService;
 
     @GetMapping
-    public ResponseEntity<List<BookingInfoMongo>> findAll(Filter filter) {
-        return ResponseEntity.ok(bookingInfoService.findAll(filter));
+    public ResponseEntity<List<UserInfoMongo>> findAll(Filter filter) {
+        return ResponseEntity.ok(userInfoService.findAll(filter));
 
     }
 
     @GetMapping("/save")
     public ResponseEntity<Void> saveToFile() {
-        if (!bookingInfoService.saveToFile()) return ResponseEntity.notFound().build();
+        if (!userInfoService.saveToFile()) return ResponseEntity.notFound().build();
         return ResponseEntity.noContent().build();
     }
 
@@ -49,15 +49,13 @@ public class BookingInfoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookingInfoMongo> getById(@PathVariable String Id) {
-        return ResponseEntity.ok(bookingInfoService.findById(Id));
+    public ResponseEntity<UserInfoMongo> getById(@PathVariable String Id) {
+        return ResponseEntity.ok(userInfoService.findById(Id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable String Id) {
-        bookingInfoService.deleteById(Id);
+        userInfoService.deleteById(Id);
         return ResponseEntity.noContent().build();
     }
-
-
 }

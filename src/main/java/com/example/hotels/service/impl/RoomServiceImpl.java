@@ -63,11 +63,6 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.save(room);
     }
 
-//    @Override
-//    public Room findByNumber(Integer number) {
-//        return roomRepository.findByNumber(number).orElseThrow(() -> new EntityNotFoundException(
-//                MessageFormat.format("Room number: {0} not found!", number)));
-//    }
 
     @Override
     public Room findById(UUID id) {
@@ -84,12 +79,6 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.deleteById(id);
     }
 
-//    @Override
-//    public void addDates(UUID roomId, LocalDate startDate, LocalDate endDate) {
-//        Room room = findById(roomId);
-//        room.addBusyDates(startDate, endDate);
-//        roomRepository.save(room);
-//    }
 
     @Override
     public boolean existsByNumber(UUID hotelId, Integer roomNumber) {

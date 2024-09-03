@@ -9,6 +9,7 @@ import com.example.hotels.mapper.HotelMapper;
 import com.example.hotels.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.MessageFormat;
@@ -30,6 +31,7 @@ public class HotelController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<HotelResponse> create(@RequestBody HotelRequest request) {
         if (hotelService.existsByName(request.getName()) && hotelService.existsByCity(request.getCity())) {
             throw new AlreadyExistsException(MessageFormat
@@ -46,6 +48,7 @@ public class HotelController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<HotelResponse> update(@PathVariable UUID id,
                                                 @RequestBody HotelRequest request) {
         Hotel hotel = hotelService.update(id, hotelMapper.fromRequestToHotel(request));
@@ -54,6 +57,7 @@ public class HotelController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         hotelService.deleteById(id);
 

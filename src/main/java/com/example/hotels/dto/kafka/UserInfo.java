@@ -1,9 +1,14 @@
-//package com.example.hotels.dto.kafka;
-//
-//import lombok.Data;
-//
-//import java.util.UUID;
-//@Data
-//public class UserInfo {
-//    private UUID userId;
-//}
+package com.example.hotels.dto.kafka;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserInfo {
+    private String userId;
+}

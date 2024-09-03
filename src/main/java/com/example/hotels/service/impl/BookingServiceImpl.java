@@ -61,12 +61,4 @@ public class BookingServiceImpl implements BookingService {
         bookingRepository.deleteById(id);
     }
 
-//    @Override
-//    public Booking update(UUID id, Booking booking) {
-//
-//        Booking existingBooking = findById(id);
-//        booking.setId(existingBooking.getId());
-//        BeanUtils.copyProperties(booking, existingBooking);
-//        return bookingRepository.save(booking);
-//    }
 }

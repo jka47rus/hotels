@@ -1,7 +1,6 @@
 package com.example.hotels.controller;
 
 import com.example.hotels.dto.filter.Filter;
-//import com.example.hotels.dto.kafka.BookingInfo;
 import com.example.hotels.dto.kafka.BookingInfo;
 import com.example.hotels.dto.request.BookingRequest;
 import com.example.hotels.dto.response.BookingResponse;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +30,8 @@ public class BookingController {
     private final BookingMapper bookingMapper;
 
 
-
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<BookingResponse>> findAll(Filter filter) {
         return ResponseEntity.ok(bookingMapper.fromAllBookingsToListResponse(bookingService.findAll(filter)));
 
@@ -44,7 +44,7 @@ public class BookingController {
         bookingService.save(booking);
 
         kafkaTemplate.send(topicName, BookingInfo.builder()
-                .userId(request.getUserId())
+                .userId(request.getUserId().toString())
                 .checkIn(request.getStartDate())
                 .checkOut(request.getEndDate()).build());
 
@@ -62,20 +62,5 @@ public class BookingController {
         bookingService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-    //    @PutMapping("/{id}")
-//    public ResponseEntity<BookingResponse> update(@PathVariable UUID id,
-//                                                  @RequestBody BookingRequest request) {
-////        if (roomService.existsByHotelId(request.getHotelId())) {
-////            if (roomService.existsByNumber(request.getNumber())) {
-////                throw new AlreadyExistsException(MessageFormat
-////                        .format("Room: {0} in hotel id: {1} already exists!", request.getNumber(), request.getHotelId()));
-////            }
-////        }
-//        Booking booking = bookingService.update(id, bookingMapper.fromRequestToBooking(request));
-//
-//        return ResponseEntity.ok(bookingMapper.fromBookingToResponse(booking));
-//    }
-
 
 }

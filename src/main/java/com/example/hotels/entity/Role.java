@@ -3,6 +3,8 @@ package com.example.hotels.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.UUID;
 
@@ -20,9 +22,9 @@ public class Role {
     @ToString.Exclude
     private User user;
 
-//    public GrantedAuthority toRole() {
-//        return new SimpleGrantedAuthority(roleType.name());
-//    }
+    public GrantedAuthority toRole() {
+        return new SimpleGrantedAuthority(roleType.name());
+    }
 
     public static Role from(RoleType type) {
         Role role = new Role();

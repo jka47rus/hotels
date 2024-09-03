@@ -1,21 +1,19 @@
 package com.example.hotels.service;
 
 import com.example.hotels.dto.filter.Filter;
-import com.example.hotels.dto.kafka.BookingInfo;
-import com.example.hotels.entity.Booking;
+import com.example.hotels.entity.BookingInfoMongo;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface BookingInfoService {
 
-    List<BookingInfo> findAll(Filter filter);
+    List<BookingInfoMongo> findAll(Filter filter);
 
-    BookingInfo save(BookingInfo bookingInfo);
+    BookingInfoMongo save(BookingInfoMongo bookingInfo);
 
-    BookingInfo findById(UUID id);
+    BookingInfoMongo findById(String id);
 
-    void deleteById(UUID id);
+    void deleteById(String id);
 
     boolean saveToFile();
 

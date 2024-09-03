@@ -1,7 +1,7 @@
 package com.example.hotels.configuration;
 
 import com.example.hotels.dto.kafka.BookingInfo;
-
+import com.example.hotels.dto.kafka.UserInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -26,8 +26,12 @@ public class KafkaConfiguration {
     @Value("${app.kafka.bookingGroupId}")
     private String bookingGroupId;
 
+    @Value("${app.kafka.usersGroupId}")
+    private String userGroupId;
+
+
     @Bean
-    ProducerFactory<String, BookingInfo> bookingInfoProducerFactory(ObjectMapper objectMapper){
+    ProducerFactory<String, BookingInfo> bookingInfoProducerFactory(ObjectMapper objectMapper) {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -38,12 +42,12 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, BookingInfo> kafkaTemplate(ProducerFactory<String, BookingInfo> bookingInfoProducerFactory){
+    public KafkaTemplate<String, BookingInfo> kafkaTemplate(ProducerFactory<String, BookingInfo> bookingInfoProducerFactory) {
         return new KafkaTemplate<>(bookingInfoProducerFactory);
     }
 
     @Bean
-    public ConsumerFactory <String, BookingInfo> bookingInfoConsumerFactory(ObjectMapper objectMapper){
+    public ConsumerFactory<String, BookingInfo> bookingInfoConsumerFactory(ObjectMapper objectMapper) {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -58,11 +62,52 @@ public class KafkaConfiguration {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, BookingInfo> bookingInfoConcurrentKafkaListenerContainerFactory(
             ConsumerFactory<String, BookingInfo> bookingInfoConsumerFactory
-    ){
+    ) {
         ConcurrentKafkaListenerContainerFactory<String, BookingInfo> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(bookingInfoConsumerFactory);
         return factory;
     }
+
+
+    @Bean
+    ProducerFactory<String, UserInfo> userInfoProducerFactory(ObjectMapper objectMapper) {
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(config, new StringSerializer(), new JsonSerializer<>(objectMapper));
+    }
+
+    @Bean
+    public KafkaTemplate<String, UserInfo> userKafkaTemplate(ProducerFactory<String, UserInfo> userInfoProducerFactory) {
+        return new KafkaTemplate<>(userInfoProducerFactory);
+    }
+
+    @Bean
+    public ConsumerFactory<String, UserInfo> userInfoConsumerFactory(ObjectMapper objectMapper) {
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, userGroupId);
+        config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new JsonDeserializer<>(objectMapper));
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, UserInfo> userInfoConcurrentKafkaListenerContainerFactory(
+            ConsumerFactory<String, UserInfo> userInfoConsumerFactory
+    ) {
+        ConcurrentKafkaListenerContainerFactory<String, UserInfo> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(userInfoConsumerFactory);
+        return factory;
+    }
+
 
 }

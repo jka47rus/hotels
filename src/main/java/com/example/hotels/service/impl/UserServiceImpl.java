@@ -4,11 +4,14 @@ import com.example.hotels.dto.filter.Filter;
 import com.example.hotels.entity.Role;
 import com.example.hotels.entity.User;
 import com.example.hotels.exception.EntityNotFoundException;
+import com.example.hotels.repository.RoleRepository;
 import com.example.hotels.repository.UserRepository;
+import com.example.hotels.service.UserInfoService;
 import com.example.hotels.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -21,7 +24,9 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final UserInfoService userInfoService;
 
 
     @Override
@@ -33,10 +38,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user, Role role) {
         user.setRoles(Collections.singletonList(role));
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
         role.setUser(user);
+        roleRepository.save(role);
 
-        return userRepository.save(user);
+        return user;
     }
 
     @Override
