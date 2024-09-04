@@ -87,6 +87,11 @@ public class UserController {
         return ResponseEntity.ok(userMapper.userToResponse(userService.findById(id)));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getByUsername(@RequestParam String username) {
+        return ResponseEntity.ok(userMapper.userToResponse(userService.findByUsername(username)));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         userService.deleteById(id);
