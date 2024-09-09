@@ -4,6 +4,7 @@ import com.example.hotels.dto.filter.Filter;
 import com.example.hotels.entity.BookingInfoMongo;
 import com.example.hotels.service.BookingInfoService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,25 +30,26 @@ public class BookingInfoController {
 
     }
 
-    @GetMapping("/save")
-    public ResponseEntity<Void> saveToFile() {
-        if (!bookingInfoService.saveToFile()) return ResponseEntity.notFound().build();
-        return ResponseEntity.noContent().build();
-    }
 
-    @GetMapping("/download/{filename}")
+    @SneakyThrows
+    @GetMapping("/download")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+    public ResponseEntity<File> downloadFile() {
 
-        Resource fileResource = new ClassPathResource("files/" + filename);
-        if (!fileResource.exists()) return ResponseEntity.notFound().build();
+//        Resource fileResource = new ClassPathResource("files/" + filename);
+//        if (!fileResource.exists()) return ResponseEntity.notFound().build();
+        File file = new File("booking-info.csv");
+        PrintWriter pw = new PrintWriter(file);
+        List<String> info = bookingInfoService.saveToFile();
+        info.forEach(pw::println);
+        pw.close();
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "booking-info.csv");
         headers.setContentType(MediaType.TEXT_PLAIN);
 
         return ResponseEntity.ok()
-                .headers(headers)
-                .body(fileResource);
+//                .headers(headers)
+                .body(file);
     }
 
     @GetMapping("/{id}")

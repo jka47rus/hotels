@@ -47,7 +47,7 @@ public class BookingInfoServiceImpl implements BookingInfoService {
 
     @Override
     @SneakyThrows
-    public boolean saveToFile() {
+    public List<String> saveToFile() {
         List<BookingInfoMongo> info = bookingInfoRepository.findAll();
         List<String> infoToString = new ArrayList<>();
 
@@ -57,9 +57,9 @@ public class BookingInfoServiceImpl implements BookingInfoService {
             infoToString.add(builder);
         });
 
-        if (infoToString.isEmpty()) return false;
-        Files.write(Paths.get(pathForSave), infoToString);
-        return true;
+//        if (infoToString.isEmpty()) return false;
+//        Files.write(Paths.get(pathForSave), infoToString);
+        return infoToString;
     }
 
 }

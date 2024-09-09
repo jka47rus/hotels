@@ -87,8 +87,8 @@ public class UserController {
         return ResponseEntity.ok(userMapper.userToResponse(userService.findById(id)));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getByUsername(@RequestParam String username) {
+    @GetMapping("/{username}")
+    public ResponseEntity<UserResponse> getByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userMapper.userToResponse(userService.findByUsername(username)));
     }
 

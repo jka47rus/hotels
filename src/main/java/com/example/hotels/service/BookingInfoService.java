@@ -2,6 +2,7 @@ package com.example.hotels.service;
 
 import com.example.hotels.dto.filter.Filter;
 import com.example.hotels.entity.BookingInfoMongo;
+import org.apache.kafka.clients.Metadata;
 
 import java.util.List;
 
@@ -15,6 +16,6 @@ public interface BookingInfoService {
 
     void deleteById(String id);
 
-    boolean saveToFile();
+    List<String> saveToFile();
 
 }
