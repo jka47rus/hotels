@@ -4,14 +4,14 @@ import com.example.hotels.dto.filter.Filter;
 import com.example.hotels.entity.UserInfoMongo;
 import com.example.hotels.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.StringWriter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,25 +27,21 @@ public class UserInfoController {
 
     }
 
-    @GetMapping("/save")
-    public ResponseEntity<Void> saveToFile() {
-        if (!userInfoService.saveToFile()) return ResponseEntity.notFound().build();
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/download/{filename}")
+    @SneakyThrows
+    @GetMapping("/download")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+    public ResponseEntity<String> downloadFile() {
+        StringWriter writer = new StringWriter();
+        List<String> info = userInfoService.saveToFile();
+        info.forEach(s -> writer.write(s + "\n"));
 
-        Resource fileResource = new ClassPathResource("files/" + filename);
-        if (!fileResource.exists()) return ResponseEntity.notFound().build();
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=user-info.csv");
         headers.setContentType(MediaType.TEXT_PLAIN);
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(fileResource);
+                .body(writer.toString());
     }
 
     @GetMapping("/{id}")

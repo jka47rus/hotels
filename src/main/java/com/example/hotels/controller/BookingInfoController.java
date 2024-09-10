@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -34,22 +35,20 @@ public class BookingInfoController {
     @SneakyThrows
     @GetMapping("/download")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<File> downloadFile() {
+    public ResponseEntity<String> downloadFile() {
 
-//        Resource fileResource = new ClassPathResource("files/" + filename);
-//        if (!fileResource.exists()) return ResponseEntity.notFound().build();
-        File file = new File("booking-info.csv");
-        PrintWriter pw = new PrintWriter(file);
+        StringWriter writer = new StringWriter();
+
         List<String> info = bookingInfoService.saveToFile();
-        info.forEach(pw::println);
-        pw.close();
+        info.forEach(s-> writer.write(s + "\n"));
+
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "booking-info.csv");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=booking-info.csv");
         headers.setContentType(MediaType.TEXT_PLAIN);
 
         return ResponseEntity.ok()
-//                .headers(headers)
-                .body(file);
+                .headers(headers)
+                .body(writer.toString());
     }
 
     @GetMapping("/{id}")

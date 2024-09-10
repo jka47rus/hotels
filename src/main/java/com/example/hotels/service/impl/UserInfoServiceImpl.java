@@ -4,6 +4,7 @@ import com.example.hotels.dto.filter.Filter;
 import com.example.hotels.entity.UserInfoMongo;
 import com.example.hotels.repository_mongo.UserInfoRepository;
 import com.example.hotels.service.UserInfoService;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,12 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class UserInfoServiceImpl implements UserInfoService {
 
-    @Autowired
     private UserInfoRepository userInfoRepository;
-    @Value("${app.file-path-user}")
-    private String pathForSave;
 
     @Override
     public List<UserInfoMongo> findAll(Filter filter) {
@@ -45,7 +44,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     @SneakyThrows
-    public boolean saveToFile() {
+    public List<String> saveToFile() {
         List<UserInfoMongo> info = userInfoRepository.findAll();
         List<String> infoToString = new ArrayList<>();
 
@@ -54,8 +53,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             infoToString.add(builder);
         });
 
-        if (infoToString.isEmpty()) return false;
-        Files.write(Paths.get(pathForSave), infoToString);
-        return true;
+
+        return infoToString;
     }
 }

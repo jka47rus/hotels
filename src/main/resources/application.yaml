@@ -29,5 +29,3 @@ app:
     usersTopic: "users-topic"
     usersGroupId: "users-group-id"
 
-  file-path-booking: "src/main/resources/files/booking-info.csv"
-  file-path-user: "src/main/resources/files/user-info.csv"

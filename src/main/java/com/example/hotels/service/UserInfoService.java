@@ -14,5 +14,5 @@ public interface UserInfoService {
 
     void deleteById(String id);
 
-    boolean saveToFile();
+    List<String> saveToFile();
 }
